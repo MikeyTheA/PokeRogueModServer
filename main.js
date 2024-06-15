@@ -20,6 +20,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get('/', async (request, response) => {
+    response.send('<h1>hello, why you here man</h1>');
+});
+
 app.get('/mods', async (request, response) => {
     console.log(`Endpoint /mods`);
 
