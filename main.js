@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Octokit } = require('@octokit/rest');
 const express = require('express');
+const cors = require('cors');
 
 const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN;
 
@@ -12,6 +13,7 @@ const octokit = new Octokit({
     const PORT = process.env.PORT || 3000;
     const app = express();
     app.use(express.json());
+    app.use(cors());
 
     app.listen(PORT, () => {
         console.log('Server listening on PORT:', PORT);
