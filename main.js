@@ -15,7 +15,7 @@ const privateKey = fs.readFileSync('key.pem', 'utf8');
 const certificate = fs.readFileSync('certificate.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 443;
 const app = express();
 app.use(express.json());
 app.use(cors());
