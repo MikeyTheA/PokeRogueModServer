@@ -10,7 +10,7 @@ const octokit = new Octokit({
 });
 
 (async () => {
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 8080;
     const app = express();
     app.use(express.json());
     app.use(cors());
@@ -20,7 +20,7 @@ const octokit = new Octokit({
     });
 
     app.get('/mods', async (request, response) => {
-        console.log(`Endpoint /mod`);
+        console.log(`Endpoint /mods`);
 
         const mods = await await octokit.paginate(octokit.search.repos, { q: 'topic:pokeroguemod' });
         response.send(
