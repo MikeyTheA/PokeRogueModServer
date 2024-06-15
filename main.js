@@ -71,6 +71,7 @@ app.get('/mod', async (request, response) => {
         author: modData.owner.login,
         version: modjsonData.version || '1.0',
         description: modjsonData.description || '',
+        url: modData.html_url,
         scripts: modfiles.data.filter((script) => script.name.endsWith('.js')),
     };
 
