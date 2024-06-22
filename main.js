@@ -15,7 +15,7 @@ const privateKey = fs.readFileSync('key.pem', 'utf8');
 const certificate = fs.readFileSync('certificate.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
-const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 5667;
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -27,7 +27,7 @@ app.get('/', async (request, response) => {
 app.get('/mods', async (request, response) => {
     console.log(`Endpoint /mods`);
 
-    const mods = await await octokit.paginate(octokit.search.repos, { q: 'topic:pokeroguemod' });
+    const mods = await octokit.paginate(octokit.search.repos, { q: 'topic:pokeroguemod' });
     response.send(
         mods.map((mod) => ({
             name: mod.name,
