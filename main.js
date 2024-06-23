@@ -66,13 +66,19 @@ app.get('/mod', async (request, response) => {
         return;
     }
 
+    const scriptfiles = await octokit.rest.repos.getContent({
+        owner: modData.owner.login,
+        repo: modData.name,
+        path: 'build',
+    });
+
     const mod = {
         name: modData.name,
         author: modData.owner.login,
         version: modjsonData.version || '1.0',
         description: modjsonData.description || '',
         url: modData.html_url,
-        scripts: modfiles.data.filter((script) => script.name.endsWith('.js')),
+        scripts: scriptfiles.data.filter((script) => script.name.endsWith('.js')),
     };
 
     return response.send(mod);
