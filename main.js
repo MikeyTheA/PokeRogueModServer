@@ -5,14 +5,15 @@ const cors = require('cors');
 const https = require('https');
 const fs = require('fs');
 
+const TESTING = process.env.TESTING;
 const GITHUB_AUTH_TOKEN = process.env.GITHUB_AUTH_TOKEN;
 
 const octokit = new Octokit({
     auth: GITHUB_AUTH_TOKEN,
 });
 
-const privateKey = fs.readFileSync('key.pem', 'utf8');
-const certificate = fs.readFileSync('certificate.pem', 'utf8');
+const privateKey = TESTING === '1' ? '' : fs.readFileSync('key.pem', 'utf8');
+const certificate = TESTING === '1' ? '' : fs.readFileSync('certificate.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 const PORT = process.env.PORT || 2053;
@@ -66,25 +67,31 @@ app.get('/mod', async (request, response) => {
         return;
     }
 
-    const scriptfiles = await octokit.rest.repos.getContent({
-        owner: modData.owner.login,
-        repo: modData.name,
-        path: 'build',
-    });
-
     const mod = {
         name: modData.name,
         author: modData.owner.login,
         version: modjsonData.version || '1.0',
         description: modjsonData.description || '',
         url: modData.html_url,
-        scripts: scriptfiles.data.filter((script) => script.name.endsWith('.js')),
+        //scripts: scriptfiles.data.filter((script) => script.name.endsWith('.js')),
     };
+
+    console.log(modfiles.data);
+
+    if (modfiles.data.find((pred) => pred.path === 'build')) {
+        const scriptfiles = await octokit.rest.repos.getContent({
+            owner: modData.owner.login,
+            repo: modData.name,
+            path: 'build',
+        });
+
+        mod['scripts'] = scriptfiles.data.filter((script) => script.name.endsWith('.js'));
+    }
 
     return response.send(mod);
 });
 
-const httpsServer = https.createServer(credentials, app);
+const httpsServer = TESTING === '1' ? app : https.createServer(credentials, app);
 
 httpsServer.listen(PORT, () => {
     console.log('Server listening on PORT:', PORT);
